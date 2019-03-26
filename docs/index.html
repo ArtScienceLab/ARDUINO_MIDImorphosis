@@ -1,0 +1,273 @@
+
+<!DOCTYPE HTML>
+	<html>
+	<head>
+	    <title>Midi to csv - DOCS</title>
+	    <script>
+			/*setTimeout(function () { location.reload(1); }, 2300);*/
+	    </script>
+	    <style>
+	    	body {
+			    font-family: sans-serif;
+			    font-size: 100%;
+			    color: #000;
+			    margin: 0px;
+			    padding: 0px 20px 10px 20px;
+				background-color: #fff;
+			}
+			
+			/* -- hyperlink styles ------------------------------------------------------ */
+			
+			a {
+			    color: green;
+			    text-decoration: none;
+			}
+			
+			a:visited {
+			    color: green;
+			    text-decoration: none;
+			}
+			
+			a:hover {
+			    text-decoration: underline;
+			}
+			
+			
+			
+			/* -- body styles ----------------------------------------------------------- */
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+			    font-family: Georgia;
+			    background-color: #f2f2f2;
+			    font-weight: normal;
+			    color: #20435c;
+			    border-bottom: 1px solid #ccc;
+			    margin: 20px -20px 10px -20px;
+			    padding: 3px 0 3px 10px;
+			}
+			
+			h1 { margin-top: 0; font-size: 200%;font-family: Georgia; }
+			h2 { font-size: 160%;font-family: Georgia; }
+			h3 { font-size: 115%;font-family: Georgia; }
+			h4 { font-size: 100%;font-family: Georgia; }
+			
+			
+			
+			h1 a, h2 a, h3 a, h4 a, h5 a, h6 a{
+			    color: #000000;
+			    font-size: 0.8em;
+			    padding: 0 4px 0 4px;
+			    text-decoration: none;
+			}
+			
+			h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+			    background-color: #000000;
+			    color: white;
+			}
+			
+			div.note {
+			    background-color: #eee;
+			    border: 1px solid #ccc;
+			}
+			
+			div.seealso {
+			    background-color: #ffc;
+			    border: 1px solid #ff6;
+			}
+			
+			
+			div.warning {
+			    background-color: #ffe4e4;
+			    border: 1px solid #f66;
+			}
+			
+			pre {
+			    padding: 5px;
+			    background-color: #eeffcc;
+			    color: #333333;
+			    line-height: 120%;
+			    border: 1px solid #ac9;
+			    border-left: none;
+			    border-right: none;
+			}
+			
+			pre code{
+			    background-color: #eeffcc;
+			}
+			code, tt {
+			    background-color: #ecf0f3;
+			    padding: 0 1px 0 1px;
+			    font-size: 0.95em;
+			}
+			
+			
+			
+			th {
+			    background-color: #ede;
+			}
+			
+			.warning tt {
+			    background: #efc2c2;
+			}
+			
+			.note tt {
+			    background: #d6d6d6;
+			}
+			
+			.inlist{
+			   
+			}
+			
+			ol + pre {
+			    margin-left:3.2em;
+			}
+	    </style>
+	</head>
+<body>
+	<h1 id="midi-to-csv">The Midimorphosis</h1>
+<p>Analog sensors (balance boards, accelerometers, light sensors, distance sensors) can be used together with music or video material. During an experiment which monitors a music performance it might be a requirement to record music, video and analog sensor in synchronously. The software here allows this in an efficient and practical way with standard DAW software.</p>
+<p>In order to do this analog sensors are attached to a microcontroller which can present itself as class compliant MIDI devices. Low latency recording of analog sensor data, then, boils down to recording MIDI events from a standard MIDI instrument. The system consists of a programmed microcontroller, a standardized MIDI protocol and a script to convert the recorded MIDI track to a text file with timestamped measurement values which can be analyzed.</p>
+<p>The name of the system hints at the MIDI protocol being morphed into something it was not designed for. From a system designed for communication between instruments into a horrible vermin, a bug, a dung beetle?</p>
+<h2 id="use">Use of the MIDImorphosis</h2>
+<p>First a microconroller with up to eight analog sensors needs to be prepared. See below for example code for a <a href="https://www.pjrc.com/teensy/">Teensy microcontroller</a>. Crucially, this device needs to be programmed as “MIDI Device”.</p>
+<p>Next the sensor data needs to be recorded. This can be done in Ardour, Ableton or any other DAW software system. After recording the midi data it needs to be exported.</p>
+<p>Once a midi file is recorded, it needs to be converted to a format that is more practical to analyze: a csv file with timestamps in seconds and values. <a href="scripts/the_midimorphosis.rb">A Ruby script</a> is available that does this conversion. To convert a midi file to a csv file with timestamped midi events in seconds you need Ruby and midicsv on your system. See <a href="#install">installation</a> if this is not already installed.</p>
+<p>To execute the script it needs at least two arguments. The first argument is the BPM value that was used to record the MIDI file. Since some DAW’s (Ableton) do not encode this in the MIDI file it needs to be provided. The second and following arguments are MIDI files. Each midi file is converted and a csv file is saved in the same folder as the midi file with a csv extension.</p>
+<p><code>ruby the_midimorphosis.rb 120 [midi_input_01.midi other_midi_file.midi..]</code></p>
+<p><code>ruby the_midimorphosis.rb 120 folder/*.midi</code></p>
+<p>The result is a csv file that uses the same time-line as the audio recordings (and potentially other recording modalities).</p>
+<h2 id="install">Installation</h2>
+<p>The binary MIDI file is decoded with the <a href="http://www.fourmilab.ch/webtools/midicsv/">midicsv tool</a> and this decoded information is filtered with Ruby. The midicsv program needs to be accessible on the path of your machine. To do this the following can be done:</p>
+<p>On Mac OS X, first install <a href="https://brew.sh/">homebrew</a>, and then execute <code>brew install midicsv</code></p>
+<p>On debian like systems <code>sudo apt-get install midicsv</code></p>
+<p>For windows systems, an executable should be available together with this software. Alternatively, download <a href="http://www.fourmilab.ch/webtools/midicsv/midicsv-1.1.zip">the midicsv executables</a>.</p>
+<h2 id="visualization">Testing and Visualization</h2>
+<p>For debugging purpose the visualization web-page shows signals coming from from your sensor if it is connected an you are using a <a href="https://www.google.com/chrome/">Google Chrome</a> browser with the <a href="https://webaudio.github.io/web-midi-api/">Web MIDI API</a>.</p>
+<p><a href="docs/cc_viz.html">Signal visualization</a></p>
+<h2 id="midi-protocol">MIDI protocol</h2>
+<p>Each sensor encodes measurements in MIDI CC messages. Each CC message has a CC number with a <a href="http://nickfever.com/music/midi-cc-list">predefined purpose</a>. Next to this number it also has a value between <strong>0-127</strong> (7bits). More <a href="https://ccrma.stanford.edu/~craig/articles/linuxmidi/misc/essenmidi.html">information on MIDI messages</a> can be found online. MIDI CC messages have the advantage with respect to NOTE ON messages that they do not need a NOTE off message and are for the most part ignored by software synthesizers.</p>
+<p>Analog measurements on a Teensy are encoded in 13 bits. By combining two CC messages with 7 bit values we have 14 bits at our disposal. Furthermore, to prevent that the CC messages have some effect (e.g. changing volume) we use the undefined CC numbers between 102 - 119. Each analog measurement is also encoded on a separate MIDI channel. There are 16 MIDI channels available. This means that analog measurements can be recorded from a single analog input (e.g. A0) if you select only messages on a single MIDI channel (e.g. MIDI channel 1). If all channels are allowed the analog input can be determined by the MIDI CC number</p>
+<p>So each analog measurement is multiplied by two (13 to 14 bits), encoded into two MIDI CC messages which are sent together. First the most significant bits (MSB) are sent on even MIDI CC numbers (starting from 0x66) immediately followed by the least significant bits (LSB) on odd MIDI CC numbers (starting from 0x67). The following table summarizes this:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Teensy Input</th>
+<th>MIDI Message type (Hex)</th>
+<th>MIDI Channel</th>
+<th>MIDI CC Number</th>
+<th>MIDI CC Number interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A0</td>
+<td>0XB0 176</td>
+<td>1</td>
+<td>0x66 102</td>
+<td>MSB</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0XB0</td>
+<td>1</td>
+<td>0x67 103</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td>A1</td>
+<td>0XB1 177</td>
+<td>2</td>
+<td>0x68 104</td>
+<td>MSB</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0XB1</td>
+<td>2</td>
+<td>0x69 105</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td>A2</td>
+<td>0XB2</td>
+<td>3</td>
+<td>0x6A</td>
+<td>MSB</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0XB2</td>
+<td>3</td>
+<td>0x6B</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td>A3</td>
+<td>0XB3</td>
+<td>4</td>
+<td>0x6C</td>
+<td>MSB</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0XB2</td>
+<td>4</td>
+<td>0x6D</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td>A4</td>
+<td>0XB4</td>
+<td>5</td>
+<td>0x6E</td>
+<td>MSB</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0XB4</td>
+<td>5</td>
+<td>0x6F</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td>..</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>A8</td>
+<td>0XB8 184</td>
+<td>9</td>
+<td>0x74 116</td>
+<td>LSB</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>0XB8</td>
+<td>9</td>
+<td>0x75 117</td>
+<td>MSB</td>
+</tr>
+</tbody>
+</table>
+<p>There is also an option to send a NOTE_ON and NOTE_OFF event pair every second in order to verify that the system is sending data. Make sure that these events are ignored by any software synth.</p>
+<h3 id="timing-precision">MIDI Timing precision</h3>
+<p>Midi encodes time in ticks. The tempo is specified as the Number of microseconds per quarter note, between 1 and 16777215. A value of 500000 corresponds to 120 quarter notes (“beats”) per minute. To convert beats per minute to a Tempo value, take the quotient from dividing 60 000 000 by the beats per minute. To calculate only the size of this tick the midi_csv program can be called as follows:</p>
+<p><code>ruby the_midimorphosis.rb 120</code></p>
+<h2 id="teensy-code">Micro-controller configuration - Teensy code</h2>
+<p>To create a micro-controller compatible with this setup, it needs to be programmed as a class compliant MIDI device. It also needs to follow the MIDI protocol described above. Synchronization can be done with either an internal clocking mechanism or by following an external clock.</p>
+<p>The analog measurements are sent as 14 bit words. The Teensy supports 13 bit measurements so these are multiplied by two. Other precisions should be converted to 14 bits as well.</p>
+<p>For reference, please consult the <a href="../teensy/analog_to_midi_cc/analog_to_midi_cc.ino">Teensy code</a></p>
+<h2 id="credits">Credits</h2>
+<p>Developed by Joren Six at IPEM, University Ghent for the <a href="https://www.ugent.be/lw/kunstwetenschappen/en/research-groups/musicology/ipem/artsciencelab-ipem">ASIL lab</a> of <a href="https://dekrook.be/">de Krook</a>.</p>
+
+
+</body>
+	
+</html>

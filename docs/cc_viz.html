@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>MIDI signal visalizer</title>
+<script type="text/javascript">
+if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess({
+        sysex: false //not interested in sysex. 
+    }).then(onMIDISuccess, onMIDIFailure);
+} else {
+    alert("No MIDI support in your browser.");
+}
+
+var midi = null;
+
+// midi functions
+function onMIDISuccess(midiAccess) {
+    // when we get a succesful response, run this code
+    midi = midiAccess;
+    onMidiAccess();
+}
+
+function onMidiMessageDo(thisFunction){
+	var inputs = midi.inputs.values();
+    // loop over all available inputs and listen for any MIDI input
+    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+        // each time there is a midi message call the onMIDIMessage function
+        input.value.onmidimessage = thisFunction;
+    }
+}
+
+function onMIDIFailure(e) {
+    // when we get a failed response, run this code
+    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use Web MIDI APIShim " + e);
+}
+
+function sendMidi(mesage,manufacturer){
+	var list = midi.outputs;
+	var devices = midi.outputs.values()
+	var teensy = null
+
+	for (let device of devices) { 
+		console.log(device.name)
+    	if(manufacturer  == device.manufacturer){
+    		teensy = device
+    	}
+	}
+	teensy.send(message)
+}
+</script>
+<style>
+body{
+	display: grid;
+	margin:0;
+	grid-template-columns: 1fr 5fr;
+	grid-template-rows: 1fr;
+	padding: 0;
+	width: 100vw; 
+	height: 100vh;
+	justify-content: center;
+	font-family: "din-2014",sans-serif;
+}	
+
+canvas{
+	width: 100%;
+	height: 100%;
+	grid-row: 1;
+	grid-column: 2;
+
+	/*image-rendering: pixelated;*/
+}
+#controls{
+	grid-row: 1;
+	grid-column: 1;
+	align-content: center;
+	height:100%;
+	border-right: gray 1px solid;
+	padding-left: 0.5em;
+}
+label{
+	display: block;
+	margin-bottom: 0.2em;
+	margin-right: 0.2em;
+	padding: 0.1em;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="controls">
+	<h3>Show inputs</h3>
+	<label> A0 <input type="checkbox" name="analogInput" id="A0" checked></input> 
+		<output name="analogValue"></output>
+	</label>
+	<label> A1 <input type="checkbox" name="analogInput" id="A1" checked></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A2 <input type="checkbox" name="analogInput" id="A2" checked></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A3 <input type="checkbox" name="analogInput" id="A3"></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A4 <input type="checkbox" name="analogInput" id="A4"></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A5 <input type="checkbox" name="analogInput" id="A5"></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A6 <input type="checkbox" name="analogInput" id="A6"></input>
+		<output name="analogValue"></output>
+	</label>
+	<label> A7 <input type="checkbox" name="analogInput" id="A7"></input>
+		<output name="analogValue"></output>
+	</label>
+
+	<h3>Sample rate</h3>
+	<label>Sample rate: <input id="samplerate" step="1" min="1" max="8000" value="50" type="number"></label>
+	<label>Follow Trigger : <input id="follow_trigger" type="checkbox"></label>
+
+	<h3>Map</h3>
+	<label> A0 
+		<select>
+		  <option selected value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A1 
+		<select>
+		  <option value="1">1</option>
+		  <option selected value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A2 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option selected value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A3 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option selected value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A4 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option selected value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A5 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option selected value="6">6</option>
+		  <option value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A6 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option selected value="7">7</option>
+		  <option value="8">8</option>
+		</select>
+	</label>
+	<label> A7 
+		<select>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		  <option value="6">6</option>
+		  <option value="7">7</option>
+		  <option selected value="8">8</option>
+		</select>
+	</label>
+	<button id="sendbtn">Send map</button>
+</div>
+
+<canvas id="signals"></canvas>
+
+<script type="text/javascript">
+
+
+var midiManufacturer = "Teensyduino"
+var canvas = document.getElementById("signals");
+var checkboxes = document.getElementsByName("analogInput");
+var outputElements = document.getElementsByName("analogValue");
+var samplerateInput = document.getElementById("samplerate");
+var followTriggerCheckbox = document.getElementById("follow_trigger");
+
+var canvas = document.getElementById("signals");
+
+var ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = true;
+
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+//ctx.translate(0.5, 0.5);
+
+var vizDuration = 10.0;//seconds
+var currentTime = 0;
+
+var colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28"];
+
+var midiEvents = new Map();
+var lastDataMap = new Map();
+var incomplete = 0;
+
+function onMidiAccess(){
+
+	console.log('MIDI Access Object', midi);
+
+	onMidiMessageDo(function (message) {
+		data = message.data; // this gives us our [command/channel, note, velocity] data.
+    	currentTime = message.timeStamp / 1000.0
+
+    	if(data[1] % 2 == 0){
+    		incomplete = data[2] * 128
+    	}else{
+    		analogValue = incomplete + data[2]
+    		//see here https://ccrma.stanford.edu/~craig/articles/linuxmidi/misc/essenmidi.html
+    		channel = data[0] - 0xB0
+
+    		dataobject = { value: analogValue , channel: channel };
+    		//console.log(channel);
+    		//random prevents (limits) multiple objects with same key
+    		midiEvents.set(currentTime + Math.random() / 10000.0 , dataobject )
+    	}
+	});
+}
+
+followTriggerCheckbox.onchange = function() {
+	//https://ccrma.stanford.edu/~craig/articles/linuxmidi/misc/essenmidi.html
+	//set interupt on pin 2
+	if (followTriggerCheckbox.checked) {
+		sendMidi([0xE0, 2 , 1],midiManufacturer);//enable trigger
+	} else {
+		sendMidi([0xE0, 2 , 0],midiManufacturer);//disable trigger
+	}
+	
+}
+
+samplerateInput.onchange = function(){
+	//note on = sample rate between 1 and 127*127
+	msb = Math.floor(Number(samplerateInput.value) / 127)
+	lsb = Math.floor(Number(samplerateInput.value)  - msb * 127)
+	message = [0x90, msb, lsb]
+	sendMidi(message,midiManufacturer)
+	console.log("Change sample rate: " + samplerateInput.value)
+}
+
+sendbtn.onclick = function(){
+	var selectTags = document.getElementsByTagName("select")
+	for(i=0 ; i < selectTags.length ; i++){
+		redirect = selectTags[i].value;
+		//note off index, redirect
+		sendMidi([0x80, i, Number(redirect - 1)],midiManufacturer)
+		console.log("New mapping " +  i + " to " + Number(redirect - 1) )
+	}
+}
+
+
+followTriggerCheckbox.onchange = function(){
+	console.log("Follow trigger: " + followTriggerCheckbox.checked)	
+	samplerateInput.disabled=followTriggerCheckbox.checked;
+};
+
+function draw(){
+
+  //clear drawing area
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  //draw layers
+  drawAxis();
+  drawSignals();
+  //drawEvents();
+
+  //request new animation frame (draw loop)
+  currentFrame = window.requestAnimationFrame(draw);
+}
+
+function timeToX(timeToTransform){
+	//currentTime = vid.currentTime
+	start = currentTime-vizDuration;
+	stop = currentTime;
+	return (timeToTransform - start)/vizDuration * canvas.width
+}
+
+function signalValueToY(valueToTransform){
+	maxValue = 127.0 * 127.0;
+	return  canvas.height * 0.98 - valueToTransform/maxValue * canvas.height * 0.96
+}
+
+function drawAxis(){
+	currentSec = Math.floor(currentTime);
+	//show 10s of data
+	for(i = currentSec; i>=0 && i >= currentSec - vizDuration ;  i--){
+		ctx.fillRect(timeToX(i),0,1,5);
+	}
+}
+
+function drawSignals(){
+	start = currentTime - vizDuration;
+
+	first = true;
+
+ 	
+ 	for(i = 0 ; i < 8; i++){
+
+ 		if(!checkboxes[i].checked){
+ 			continue;
+ 		}
+
+		ctx.beginPath();
+ 		ctx.strokeStyle = colors[i];
+
+		for (const [key, value] of midiEvents.entries()) {
+			if(key > start && key < currentTime && value.channel == i){
+				//console.log(value)
+				if(!first){
+					ctx.lineTo(timeToX(key),signalValueToY(value.value));
+				}
+				first = false;
+				//console.log(value)
+				ctx.moveTo(timeToX(key),signalValueToY(value.value));
+
+				lastDataMap[value.channel] = value.value;
+			}
+		}
+		ctx.stroke();
+	}
+
+	//set output voltage
+	for(channel = 0 ; channel < 8; channel++){
+		if(checkboxes[channel].checked){
+	    	outputElements[channel].value = Number(lastDataMap[channel] / 16384.0  * 3.3).toFixed(2) + " V"	
+	    } else{
+	    	outputElements[channel].value = ""
+	    }
+	}
+
+
+	//console.log(midiEvents.size)
+	if(midiEvents.size > 3*50*30 ){
+		var keyIterator = midiEvents.keys()
+		while(midiEvents.size > 3*50*25){
+			midiEvents.delete(keyIterator.next().value );	
+		}
+	}
+}
+
+draw();	
+</script>
+
+</body>
+
+</html>
