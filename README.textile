@@ -2,6 +2,8 @@ h1(#midi-to-csv). The MIDImorphosis
 
 Analog sensors (balance boards, accelerometers, light sensors, distance sensors) can be used together with music or video material. During an experiment which monitors a music performance it might be a requirement to record music, video and analog sensor in synchronously. The software here allows this in an efficient and practical way with standard DAW software.
 
+![Visualization of analog measurements](docs/cc_viz_screen.png)
+
 In order to do this analog sensors are attached to a microcontroller which can present itself as class compliant MIDI devices.  Low latency recording of analog sensor data, then, boils down to recording MIDI events from a standard MIDI instrument. The system consists of a programmed microcontroller, a standardized MIDI protocol and a script to convert the recorded MIDI track to a text file with timestamped measurement values which can be analyzed.
 
 The name of the system hints at the MIDI protocol being morphed into something it was not designed for. From a system designed for communication between instruments into a horrible vermin, a bug, a dung beetle?
