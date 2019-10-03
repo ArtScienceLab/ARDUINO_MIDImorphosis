@@ -64,10 +64,14 @@ So each analog measurement is multiplied by two (13 to 14 bits), encoded into tw
 |A4|0XB4|5|0x6E|MSB|
 ||0XB4|5|0x6F|LSB|
 |...|||||
-|A8|0XB8 184|9|0x74 116|LSB|
+|A7|0XB8 184|9|0x74 116|LSB|
 ||0XB8|9|0x75 117|MSB|
 
+Additionally an extra MIDI CC message is send on controller number 88 on channel 15. This message is sent at the start of each measurement and can be used to split messages and ensure an even sampling even when only changing midi messages are stored (as is common).
+
 There is also an option to send a NOTE_ON and NOTE_OFF event pair every second in order to verify that the system is sending data. Make sure that these events are ignored by any software synth.
+
+
 
 h3(#timing-precision). MIDI Timing precision
 
@@ -79,6 +83,13 @@ $ ruby scripts/the_midimorphosis.rb 150  -p test-data/balance_board.mid
   Did not find tempo. Will use 150 BPM
   balance_board.mid 4.166667 milliseconds
 </pre>
+
+h2(#clocking). Clocking
+
+For synchronization purposes it is important that it is known when measurements are taken. The most easy way to synchronize is to use an external TTL clock. This external clock can then direct the device to take a measurement e.g. 120 times each second.
+
+By default the microcontroller waits for a clock input. There is, however, also an option to generate a stable clock internally using interval timers. To enable these either configure the Teensy to start the internal clock automatically or send a PITCH BEND midi message to the device with the sample rate in Hz divided by 127 as the first byte (MSB) and rest as the LSB.  
+
 h2(#teensy-code). Micro-controller configuration - Teensy code
 
 To create a micro-controller compatible with this setup, it needs to be programmed as a class compliant MIDI device. It also needs to follow the MIDI protocol described above. Synchronization can be done with either an internal clocking mechanism or by following an external clock.

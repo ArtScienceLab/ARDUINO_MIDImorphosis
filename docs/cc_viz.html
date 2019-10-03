@@ -61,6 +61,9 @@ body{
 	height: 100vh;
 	justify-content: center;
 	font-family: "din-2014",sans-serif;
+}
+button{
+	display: inline-block;
 }	
 
 canvas{
@@ -92,134 +95,38 @@ label{
 <body>
 
 <div id="controls">
-	<h3>Show inputs</h3>
-	<label> A0 <input type="checkbox" name="analogInput" id="A0" checked></input> 
+	<h3>Inputs</h3>
+	<label style="color:#e6194b"> <b>A0 </b><input type="checkbox" name="analogInput" id="A0" checked></input> 
 		<output name="analogValue"></output>
 	</label>
-	<label> A1 <input type="checkbox" name="analogInput" id="A1" checked></input>
+	<label style="color:#3cb44b"> <b>A1 </b><input type="checkbox" name="analogInput" id="A1" checked></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A2 <input type="checkbox" name="analogInput" id="A2" checked></input>
+	<label style="color:#004040" > <b>A2 </b><input type="checkbox" name="analogInput" id="A2" checked></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A3 <input type="checkbox" name="analogInput" id="A3"></input>
+	<label style="color:#0082c8" > <b>A3 </b><input type="checkbox" name="analogInput" id="A3"></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A4 <input type="checkbox" name="analogInput" id="A4"></input>
+	<label style="color:#f58231"> <b>A4 </b><input type="checkbox" name="analogInput" id="A4"></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A5 <input type="checkbox" name="analogInput" id="A5"></input>
+	<label style="color:#911eb4"> <b>A5 </b><input type="checkbox" name="analogInput" id="A5"></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A6 <input type="checkbox" name="analogInput" id="A6"></input>
+	<label style="color:#46f0f0"> <b>A6 </b><input type="checkbox" name="analogInput" id="A6"></input>
 		<output name="analogValue"></output>
 	</label>
-	<label> A7 <input type="checkbox" name="analogInput" id="A7"></input>
+	<label style="color:#f032e6"> <b>A7 </b><input type="checkbox" name="analogInput" id="A7"></input>
 		<output name="analogValue"></output>
 	</label>
 
-	<h3>Sample rate</h3>
-	<label>Sample rate: <input id="samplerate" step="1" min="1" max="8000" value="50" type="number"></label>
-	<label>Follow Trigger : <input id="follow_trigger" type="checkbox"></label>
+	<h3>Sample rate <small>(Hz)</small></h3>
+	<label><input id="samplerate" step="1" min="1" max="8000" value="120" type="number"> <button id="set_sample_rate_button">Set</button></label>
 
-	<h3>Map</h3>
-	<label> A0 
-		<select>
-		  <option selected value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A1 
-		<select>
-		  <option value="1">1</option>
-		  <option selected value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A2 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option selected value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A3 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option selected value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A4 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option selected value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A5 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option selected value="6">6</option>
-		  <option value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A6 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option selected value="7">7</option>
-		  <option value="8">8</option>
-		</select>
-	</label>
-	<label> A7 
-		<select>
-		  <option value="1">1</option>
-		  <option value="2">2</option>
-		  <option value="3">3</option>
-		  <option value="4">4</option>
-		  <option value="5">5</option>
-		  <option value="6">6</option>
-		  <option value="7">7</option>
-		  <option selected value="8">8</option>
-		</select>
-	</label>
-	<button id="sendbtn">Send map</button>
+	<h3>Data</h3>
+	<label><button id="download_button">Download</button></label>
+	
 </div>
 
 <canvas id="signals"></canvas>
@@ -232,7 +139,8 @@ var canvas = document.getElementById("signals");
 var checkboxes = document.getElementsByName("analogInput");
 var outputElements = document.getElementsByName("analogValue");
 var samplerateInput = document.getElementById("samplerate");
-var followTriggerCheckbox = document.getElementById("follow_trigger");
+var setSampleRateButton = document.getElementById("set_sample_rate_button");
+var downloadButton = document.getElementById("download_button");
 
 var canvas = document.getElementById("signals");
 
@@ -246,7 +154,7 @@ canvas.height = canvas.clientHeight;
 var vizDuration = 10.0;//seconds
 var currentTime = 0;
 
-var colors = ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28"];
+var colors = ["#e6194b", "#3cb44b", "#004040", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28"];
 
 var midiEvents = new Map();
 var lastDataMap = new Map();
@@ -270,46 +178,25 @@ function onMidiAccess(){
     		dataobject = { value: analogValue , channel: channel };
     		//console.log(channel);
     		//random prevents (limits) multiple objects with same key
-    		midiEvents.set(currentTime + Math.random() / 10000.0 , dataobject )
+    		midiEvents.set(currentTime + Math.random() / 1000000.0 , dataobject )
     	}
 	});
 }
 
-followTriggerCheckbox.onchange = function() {
-	//https://ccrma.stanford.edu/~craig/articles/linuxmidi/misc/essenmidi.html
-	//set interupt on pin 2
-	if (followTriggerCheckbox.checked) {
-		sendMidi([0xE0, 2 , 1],midiManufacturer);//enable trigger
-	} else {
-		sendMidi([0xE0, 2 , 0],midiManufacturer);//disable trigger
-	}
-	
-}
-
-samplerateInput.onchange = function(){
+setSampleRateButton.onclick = function(){
 	//note on = sample rate between 1 and 127*127
 	msb = Math.floor(Number(samplerateInput.value) / 127)
 	lsb = Math.floor(Number(samplerateInput.value)  - msb * 127)
-	message = [0x90, msb, lsb]
+	message = [0xE0, msb, lsb]
 	sendMidi(message,midiManufacturer)
+
 	console.log("Change sample rate: " + samplerateInput.value)
 }
 
-sendbtn.onclick = function(){
-	var selectTags = document.getElementsByTagName("select")
-	for(i=0 ; i < selectTags.length ; i++){
-		redirect = selectTags[i].value;
-		//note off index, redirect
-		sendMidi([0x80, i, Number(redirect - 1)],midiManufacturer)
-		console.log("New mapping " +  i + " to " + Number(redirect - 1) )
-	}
+downloadButton.onclick = function(){
+	//note on = sample rate between 1 and 127*127
+	exportToCsv("data.csv");
 }
-
-
-followTriggerCheckbox.onchange = function(){
-	console.log("Follow trigger: " + followTriggerCheckbox.checked)	
-	samplerateInput.disabled=followTriggerCheckbox.checked;
-};
 
 function draw(){
 
@@ -341,8 +228,10 @@ function drawAxis(){
 	currentSec = Math.floor(currentTime);
 	//show 10s of data
 	for(i = currentSec; i>=0 && i >= currentSec - vizDuration ;  i--){
-		ctx.fillRect(timeToX(i),0,1,5);
+		ctx.fillRect(timeToX(i),0,1,20);
+		ctx.fillRect(timeToX(i), canvas.height * 0.98,1, canvas.height * 0.98-25);
 	}
+
 }
 
 function drawSignals(){
@@ -359,16 +248,17 @@ function drawSignals(){
 
 		ctx.beginPath();
  		ctx.strokeStyle = colors[i];
+ 		ctx.lineWidth = 2.5;
 
 		for (const [key, value] of midiEvents.entries()) {
 			if(key > start && key < currentTime && value.channel == i){
 				//console.log(value)
-				if(!first){
-					ctx.lineTo(timeToX(key),signalValueToY(value.value));
-				}
-				first = false;
-				//console.log(value)
-				ctx.moveTo(timeToX(key),signalValueToY(value.value));
+					if(!first){
+						ctx.lineTo(timeToX(key),signalValueToY(value.value));
+					}
+					first = false;
+					//console.log(value)
+					ctx.moveTo(timeToX(key),signalValueToY(value.value));
 
 				lastDataMap[value.channel] = value.value;
 			}
@@ -387,12 +277,54 @@ function drawSignals(){
 
 
 	//console.log(midiEvents.size)
-	if(midiEvents.size > 3*50*30 ){
+	if(midiEvents.size > 3*50*30 * 100 ){
 		var keyIterator = midiEvents.keys()
-		while(midiEvents.size > 3*50*25){
+		while(midiEvents.size > 3*50*30 * 100 ){
 			midiEvents.delete(keyIterator.next().value );	
 		}
 	}
+}
+
+function exportToCsv(filename) {
+
+	console.log("Will export CSV with");
+
+    var rows = new Map();
+    for (const [key, value] of midiEvents.entries()) {
+    	ms_key = Math.round(key*1000);
+    	if(!rows.has(ms_key)){
+    		rows.set(ms_key,[]);
+    		rows.get(ms_key).push(value.value);
+    	}else{
+    		rows.get(ms_key).push(value.value);
+    	}
+	}
+
+	var csvFile = 'Time (ms) ,A0 (V),A1 (V),A2 (V),A3 (V),A4 (V),A5 (V),A6 (V),A7 (V)';
+    for (const [key, value] of rows.entries()) {
+    	csvFile += key + ",";
+    	for (var i = 0; i < value.length; i++) {
+        	csvFile +=  ("%.3f", value[i]/(128.0+128.0) * 3.3 ).toFixed(3) + ",";
+    	}
+    	csvFile += "\n";
+	}
+
+    var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
 }
 
 draw();	
