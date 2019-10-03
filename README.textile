@@ -4,7 +4,7 @@ Analog sensors (balance boards, accelerometers, light sensors, distance sensors)
 
 <center>
 <figure>
-<img width="300" alt="Visualization of analog measurements" src="docs/cc_viz_screen.png">
+<img width="400" alt="Visualization of analog measurements" src="docs/cc_viz_screen.png">
 <caption>HTML user interface for the MIDImorphosis</caption>
 </figure></center>
 
