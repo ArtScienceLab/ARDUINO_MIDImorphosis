@@ -4,7 +4,7 @@ This patch receives a heart rate signal over MIDI, converts it to an appropriate
 
 <center>
 <figure>
-<img width="400" alt="Max decoder" src="max/max_decoder_midi.png">
+<img width="400" alt="Max decoder" src="max_decoder_midi.png">
 <caption>Max patch do decode and use MIDImorphosis data</caption>
 </figure></center>
 
