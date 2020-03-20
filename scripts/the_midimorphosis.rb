@@ -204,7 +204,7 @@ midi_files.each do |midi_file|
 		#store the value
 		if(cc_number != 88)
 			line[1][cc_number] = cc_value
-		end
+		end	
 	end
 
 	File.open(csv_file,"w") do |f|
