@@ -104,38 +104,89 @@ midi_files.each do |midi_file|
 		exit
 	end
 
-	#else
-	csv_file = midi_file.chomp('.mid') + ".csv"
-	STDERR.puts "Saving midi events to #{csv_file} ..."
-	data_hash = Hash.new
-	#CC messages for the 
-	cc_number_range = (102..117)
+	#keep only midi cc_events
+	cc_messages = midi_csv.split("\n").reject{|l| l !~ /.+Control_c.+/}
 
-	previous_time_in_seconds=0
-
-	#assumes that midi CC messages are sent at the same time 
-	#
-	timestamp_stored = false
-	lines = Array.new
-	line = Array.new
-	first = true 
-	data_hash = Hash.new
-	prev_data_hash = Hash.new
-
-	midi_csv.split("\n").reject{|l| l !~ /.+Control_c.+/}.each do |midi_event|
+	#split the cc_events
+	cc_messages = cc_messages.map do |midi_event|
 		midi_msg_data = midi_event.split(",")
+
 		time_in_midi_clocks = midi_msg_data[1].to_i
-		
 		channel = midi_msg_data[3].to_i
 		cc_number = midi_msg_data[4].to_i
 		cc_value = midi_msg_data[5].to_i
 
-		if cc_number = 88
+		[time_in_midi_clocks,channel,cc_number,cc_value]
+	end
+
+	#first pass: decide number of cc_messages (number of sensors)
+	#also determine split type 
+	cc_numbers_in_file = Hash.new
+
+	cc_messages.each do |midi_event|
+		time_in_midi_clocks,channel,cc_number,cc_value = midi_event
+		cc_numbers_in_file[cc_number]=cc_value
+	end	
+
+	#detect sensors
+	cc_number_range = Array.new 
+	(102..117).step(2).each do |cc_number|
+		if ( cc_numbers_in_file.has_key? cc_number and cc_numbers_in_file.has_key? (cc_number+1))
+			cc_number_range << cc_number
+			cc_number_range << (cc_number + 1)
+		end
+	end
+
+	number_of_sensors = cc_number_range.size / 2
+
+	STDERR.puts "Detected #{number_of_sensors} sensors."
+
+	# Detect split type (how to split messages)
+	split_via_cc_message = cc_numbers_in_file.has_key? 88
+
+	if (split_via_cc_message)
+		STDERR.puts "Will split data via cc message on cc number 88"
+	else
+		STDERR.puts "Will split data when data for cc message #{cc_number_range[0]} is received"
+	end
+
+	csv_file = midi_file.chomp('.mid') + ".csv"
+	STDERR.puts "Saving midi events to #{csv_file} "
+	data_hash = Hash.new
+	previous_time_in_seconds=0
+
+	#this assumes that midi CC messages are sent at the same time 
+	timestamp_stored = false
+	lines = Array.new
+	line = Array.new
+	first = true
+	data_hash = Hash.new
+	prev_data_hash = Hash.new
+
+	cc_messages.each do |midi_event|
+		
+		time_in_midi_clocks,channel,cc_number,cc_value = midi_event
+
+		if (split_via_cc_message and cc_number == 88)
 			#store the current line if there is a current line
 			lines << line if line.size > 0
 
 			#start a new line
 			line = Array.new
+		end
+
+		#split the line if the first sensor appears, this expects that 
+		#the order of midi messages is respected
+		if (!split_via_cc_message and cc_number == cc_number_range[0])
+			#store the current line if there is a current line
+			lines << line if line.size > 0
+
+			#start a new line
+			line = Array.new
+		end
+
+		#if there is currently no data line, start a new line
+		if line.size == 0
 			prev_data_hash = data_hash
 			data_hash = Hash.new
 
@@ -146,9 +197,12 @@ midi_files.each do |midi_file|
 			#initialize the data_hash, set each key to -1
 			cc_number_range.each{|cc_number| line[1][cc_number] = -1}
 
-			#Base the current values on the previous values
+			#Base the current values on the previous values (repeated values are ignored in MIDI messages)
 			prev_data_hash.keys.each{|cc_number| line[1][cc_number] = prev_data_hash[cc_number]}
-		else
+		end
+
+		#store the value
+		if(cc_number != 88)
 			line[1][cc_number] = cc_value
 		end
 	end
@@ -158,9 +212,10 @@ midi_files.each do |midi_file|
 			print_line = Array.new
 			print_line[0] = "%.6f" % line[0]
 			data_hash = line[1]
-			cc_number_range.step(2).each do |cc_number|
+			cc_number_range.sort.each do |cc_number|
+				next unless cc_number % 2 == 0
 				if(data_hash[cc_number] == -1 or data_hash[cc_number+1] == -1 )
-					puts "ERROR no data for #{cc_number}"
+					puts "ERROR no data for #{cc_number} at #{line[0]}"
 					print_line << ""
 				else
 
@@ -172,5 +227,8 @@ midi_files.each do |midi_file|
 				end
 			end
 			f.puts print_line.join(", ")
+		end
+
+		STDERR.puts "Created CSV file with #{lines.size} events"
 	end
 end

@@ -7,13 +7,13 @@
 // Configuration settings -----------
 
 //Number of analog inputs to use
-const int ANALOG_READ_INPUTS = 8;
+const int ANALOG_READ_INPUTS = 2;
 
 //interrupt pin for triggering
 int interruptPin=A9;
 
 //start taking samples without clock
-boolean autostartStamplerTimer = false;
+boolean autostartStamplerTimer = true;
 
 // End configuration settings ----------
 
